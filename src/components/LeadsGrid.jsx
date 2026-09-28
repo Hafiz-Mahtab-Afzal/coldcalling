@@ -5,6 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { MdOpenInNew, MdCall, MdStar, MdLock } from 'react-icons/md';
 import { FaWhatsapp } from 'react-icons/fa6';
 import OutcomeChecks from './OutcomeChecks';
+import { isDead } from '../lib/outcomes';
 import { siteHref, siteLabel, telLink, waLink } from '../lib/format';
 
 const BLUE = '#2563EB';
@@ -41,6 +42,9 @@ const gridSx = {
   '& .MuiDataGrid-row:hover': { backgroundColor: '#F8FAFC' },
   '& .MuiDataGrid-row.locked': { backgroundColor: '#FBFCFE' },
   '& .MuiDataGrid-row.locked .lock-zone': { opacity: 0.45, cursor: 'not-allowed' },
+  '& .MuiDataGrid-row.dead': { backgroundColor: '#F6F6F5' },
+  '& .MuiDataGrid-row.dead .MuiDataGrid-cell:not([data-field="outcomes"])': { opacity: 0.45 },
+  '& .MuiDataGrid-row.dead:hover': { backgroundColor: '#F1F1F0' },
   '& .MuiDataGrid-footerContainer': { borderColor: '#E4ECFC', backgroundColor: '#F8FAFC' },
   '& .MuiDataGrid-checkboxInput.Mui-checked': { color: BLUE },
   '& .MuiDataGrid-row.Mui-selected': { backgroundColor: '#EFF5FF' },
@@ -196,7 +200,10 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
         onPaginationModelChange={(m) => onPaginationChange(m.page + 1, m.pageSize)}
         pageSizeOptions={[25, 50, 100]}
         getRowId={(r) => r.id}
-        getRowClassName={(p) => (p.row.hasWebsite ? 'locked' : '')}
+        getRowClassName={(p) => {
+          if (p.row.hasWebsite) return 'locked';
+          return isDead(p.row.outcomes) ? 'dead' : '';
+        }}
         rowHeight={58}
         columnHeaderHeight={46}
         checkboxSelection

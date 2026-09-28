@@ -7,11 +7,12 @@ export const OUTCOMES = [
     bar: 'bg-amber-400',
   },
   {
-    value: 'whatsapp',
-    label: 'WhatsApp sent',
-    short: 'WhatsApp',
-    chip: 'bg-emerald-50 text-accent border-emerald-200',
-    bar: 'bg-emerald-400',
+    value: 'no_whatsapp',
+    label: 'No WhatsApp',
+    short: 'No WhatsApp',
+    chip: 'bg-stone-100 text-stone-600 border-stone-300',
+    bar: 'bg-stone-400',
+    dead: true,
   },
   {
     value: 'owner_absent',
@@ -42,6 +43,14 @@ export const OUTCOMES = [
     bar: 'bg-slate-400',
   },
   {
+    value: 'has_website',
+    label: 'Already has a website',
+    short: 'Has website',
+    chip: 'bg-stone-100 text-stone-600 border-stone-300',
+    bar: 'bg-stone-500',
+    dead: true,
+  },
+  {
     value: 'not_interested',
     label: 'Not interested',
     short: 'Not interested',
@@ -65,5 +74,9 @@ export const OUTCOMES = [
 ];
 
 export const OUTCOME_MAP = Object.fromEntries(OUTCOMES.map((o) => [o.value, o]));
+
+export const DEAD_OUTCOMES = OUTCOMES.filter((o) => o.dead).map((o) => o.value);
+
+export const isDead = (outcomes) => (outcomes || []).some((o) => DEAD_OUTCOMES.includes(o));
 
 export const outcomeLabel = (value) => OUTCOME_MAP[value]?.label ?? value;
