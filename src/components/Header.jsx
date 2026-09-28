@@ -1,4 +1,4 @@
-import { MdPhoneInTalk, MdSearch, MdRefresh, MdTrackChanges } from 'react-icons/md';
+import { MdPhoneInTalk, MdSearch, MdRefresh, MdTrackChanges, MdDoneAll } from 'react-icons/md';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
@@ -18,13 +18,15 @@ const Header = ({
   onChange,
   onRefresh,
   loading,
-  todayDone,
+  progress,
   dailyTarget,
   view,
   onViewChange,
 }) => {
   const cityOptions = filters.country ? cities.filter((c) => c.country === filters.country) : cities;
+  const { todayDone = 0, totalDone = 0, totalCallable = 0 } = progress || {};
   const pct = dailyTarget ? Math.min(100, Math.round((todayDone / dailyTarget) * 100)) : 0;
+  const totalPct = totalCallable ? Math.round((totalDone / totalCallable) * 100) : 0;
 
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface-card">
@@ -55,15 +57,34 @@ const Header = ({
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 rounded-card border border-line bg-surface-muted px-3 py-1.5">
-          <MdTrackChanges size={15} className="text-accent" aria-hidden="true" />
-          <span className="font-mono text-[13px] font-semibold text-ink">
-            {todayDone}/{dailyTarget}
-          </span>
-          <span className="text-[11px] text-ink-muted">today</span>
-          <span className="h-1.5 w-16 overflow-hidden rounded-full bg-line" role="presentation">
-            <span className="block h-full rounded-full bg-accent transition-all duration-300" style={{ width: `${pct}%` }} />
-          </span>
+        <div className="ml-auto flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-card border border-line bg-surface-muted px-3 py-1.5">
+            <MdDoneAll size={15} className="text-primary" aria-hidden="true" />
+            <span className="font-mono text-[13px] font-semibold text-ink">
+              {totalDone}/{totalCallable}
+            </span>
+            <span className="text-[11px] text-ink-muted">total</span>
+            <span className="h-1.5 w-14 overflow-hidden rounded-full bg-line" role="presentation">
+              <span
+                className="block h-full rounded-full bg-primary transition-all duration-300"
+                style={{ width: `${totalPct}%` }}
+              />
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-card border border-line bg-surface-muted px-3 py-1.5">
+            <MdTrackChanges size={15} className="text-accent" aria-hidden="true" />
+            <span className="font-mono text-[13px] font-semibold text-ink">
+              {todayDone}/{dailyTarget}
+            </span>
+            <span className="text-[11px] text-ink-muted">today</span>
+            <span className="h-1.5 w-14 overflow-hidden rounded-full bg-line" role="presentation">
+              <span
+                className="block h-full rounded-full bg-accent transition-all duration-300"
+                style={{ width: `${pct}%` }}
+              />
+            </span>
+          </div>
         </div>
       </div>
 

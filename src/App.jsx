@@ -33,7 +33,7 @@ const App = () => {
   const [scopeTotal, setScopeTotal] = useState(0);
   const [counts, setCounts] = useState({});
   const [days, setDays] = useState([]);
-  const [todayDone, setTodayDone] = useState(0);
+  const [progress, setProgress] = useState({ todayDone: 0, totalDone: 0, totalCallable: 0 });
   const [stats, setStats] = useState(null);
   const [months, setMonths] = useState([]);
   const [month, setMonth] = useState('');
@@ -131,9 +131,13 @@ const App = () => {
     try {
       const since = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
       const { data } = await http.get(apis.today, { params: { since } });
-      setTodayDone(data.todayDone || 0);
+      setProgress({
+        todayDone: data.todayDone || 0,
+        totalDone: data.totalDone || 0,
+        totalCallable: data.totalCallable || 0,
+      });
     } catch {
-      setTodayDone(0);
+      setProgress({ todayDone: 0, totalDone: 0, totalCallable: 0 });
     }
   }, []);
 
@@ -280,7 +284,7 @@ const App = () => {
           if (view === 'report') fetchStats();
         }}
         loading={loading}
-        todayDone={todayDone}
+        progress={progress}
         dailyTarget={dailyTarget}
         view={view}
         onViewChange={setView}
