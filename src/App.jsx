@@ -127,17 +127,24 @@ const App = () => {
     pageSize,
   ]);
 
+  const fetchToday = useCallback(async () => {
+    try {
+      const since = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+      const { data } = await http.get(apis.today, { params: { since } });
+      setTodayDone(data.todayDone || 0);
+    } catch {
+      setTodayDone(0);
+    }
+  }, []);
+
   const fetchDays = useCallback(async () => {
     if (!filters.city) {
       setDays([]);
-      setTodayDone(0);
       return;
     }
     try {
-      const since = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
-      const { data } = await http.get(apis.days, { params: { city: filters.city, since } });
+      const { data } = await http.get(apis.days, { params: { city: filters.city } });
       setDays(data.days || []);
-      setTodayDone(data.todayDone || 0);
     } catch {
       setDays([]);
     }
@@ -162,6 +169,10 @@ const App = () => {
   useEffect(() => {
     if (!booting) fetchDays();
   }, [booting, fetchDays]);
+
+  useEffect(() => {
+    if (!booting) fetchToday();
+  }, [booting, fetchToday]);
 
   useEffect(() => {
     if (!booting) fetchCategories();
@@ -208,6 +219,7 @@ const App = () => {
           writeQueue.current.delete(id);
           setSavingId((cur) => (cur === id ? null : cur));
           fetchDays();
+          fetchToday();
           if (filters.outcome) fetchLeads();
         }
       })
@@ -264,6 +276,7 @@ const App = () => {
         onRefresh={() => {
           fetchLeads();
           fetchDays();
+          fetchToday();
           if (view === 'report') fetchStats();
         }}
         loading={loading}
