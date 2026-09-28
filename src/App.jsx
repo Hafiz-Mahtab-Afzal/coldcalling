@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -33,6 +33,7 @@ const App = () => {
   const [scopeTotal, setScopeTotal] = useState(0);
   const [counts, setCounts] = useState({});
   const [days, setDays] = useState([]);
+  const [todayDone, setTodayDone] = useState(0);
   const [stats, setStats] = useState(null);
   const [months, setMonths] = useState([]);
   const [month, setMonth] = useState('');
@@ -129,11 +130,14 @@ const App = () => {
   const fetchDays = useCallback(async () => {
     if (!filters.city) {
       setDays([]);
+      setTodayDone(0);
       return;
     }
     try {
-      const { data } = await http.get(apis.days, { params: { city: filters.city } });
+      const since = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+      const { data } = await http.get(apis.days, { params: { city: filters.city, since } });
       setDays(data.days || []);
+      setTodayDone(data.todayDone || 0);
     } catch {
       setDays([]);
     }
@@ -166,12 +170,6 @@ const App = () => {
   useEffect(() => {
     if (!booting && view === 'report') fetchStats();
   }, [booting, view, fetchStats]);
-
-  const todayDone = useMemo(() => {
-    const active = days.find((d) => String(d.day) === String(filters.day));
-    if (active) return active.actioned;
-    return days.reduce((sum, d) => sum + d.actioned, 0);
-  }, [days, filters.day]);
 
   useEffect(() => {
     if (!filters.day) return;
