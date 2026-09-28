@@ -59,6 +59,14 @@ export const OUTCOMES = [
     dead: true,
   },
   {
+    value: 'reason_pakistan',
+    label: 'Reason: from Pakistan',
+    short: 'From Pakistan',
+    chip: 'bg-stone-100 text-stone-600 border-stone-300',
+    bar: 'bg-stone-700',
+    dead: true,
+  },
+  {
     value: 'not_interested',
     label: 'Not interested',
     short: 'Not interested',
