@@ -1,5 +1,6 @@
 import Checkbox from '@mui/material/Checkbox';
-import { OUTCOMES } from '../lib/outcomes';
+import Tooltip from '@mui/material/Tooltip';
+import { OUTCOMES, isDead } from '../lib/outcomes';
 
 const boxSx = {
   padding: '1px',
@@ -11,6 +12,7 @@ const boxSx = {
 
 const OutcomeChecks = ({ selected, disabled, busy, onToggle, rowName }) => {
   const active = new Set(selected || []);
+  const dead = isDead(selected);
 
   return (
     <div
@@ -20,22 +22,31 @@ const OutcomeChecks = ({ selected, disabled, busy, onToggle, rowName }) => {
     >
       {OUTCOMES.map((o) => {
         const on = active.has(o.value);
-        return (
+        const blocked = disabled || (dead && !o.dead);
+        const label = (
           <label
             key={o.value}
             className={`flex items-center gap-0.5 text-[11px] leading-none ${
-              disabled ? 'cursor-not-allowed' : 'cursor-pointer'
-            } ${on ? 'font-semibold text-ink' : 'text-ink-muted'}`}
+              blocked ? 'cursor-not-allowed text-ink-muted/50' : 'cursor-pointer'
+            } ${on && !blocked ? 'font-semibold text-ink' : blocked ? '' : 'text-ink-muted'}`}
           >
             <Checkbox
               checked={on}
-              disabled={disabled}
+              disabled={blocked}
               onChange={(e) => onToggle(o.value, e.target.checked)}
               sx={boxSx}
               slotProps={{ input: { 'aria-label': `${o.label} for ${rowName}` } }}
             />
             <span>{o.short}</span>
           </label>
+        );
+
+        if (!blocked || disabled) return label;
+
+        return (
+          <Tooltip key={o.value} title="This lead cannot be reached, untick that first" placement="top">
+            <span className="inline-flex">{label}</span>
+          </Tooltip>
         );
       })}
     </div>

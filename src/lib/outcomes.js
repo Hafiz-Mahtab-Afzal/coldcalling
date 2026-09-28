@@ -15,6 +15,14 @@ export const OUTCOMES = [
     dead: true,
   },
   {
+    value: 'number_deleted',
+    label: 'Deleted the number',
+    short: 'Deleted',
+    chip: 'bg-stone-100 text-stone-600 border-stone-300',
+    bar: 'bg-stone-600',
+    dead: true,
+  },
+  {
     value: 'owner_absent',
     label: 'Owner not there',
     short: 'No owner',

@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import { DataGrid } from '@mui/x-data-grid';
-import { MdOpenInNew, MdCall, MdStar, MdLock } from 'react-icons/md';
+import { MdOpenInNew, MdCall, MdStar, MdLock, MdPlace } from 'react-icons/md';
 import { FaWhatsapp } from 'react-icons/fa6';
 import OutcomeChecks from './OutcomeChecks';
 import { isDead } from '../lib/outcomes';
-import { siteHref, siteLabel, telLink, waLink } from '../lib/format';
+import { mapsHref, siteHref, siteLabel, telLink, waLink } from '../lib/format';
 
 const BLUE = '#2563EB';
 
@@ -67,12 +67,24 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
         flex: 1.3,
         minWidth: 190,
         renderCell: (p) => (
-          <div className="flex w-full min-w-0 flex-col justify-center gap-0.5 overflow-hidden">
-            <span className="block truncate text-[13px] font-semibold leading-tight text-ink">{p.row.name}</span>
-            <span className="block truncate text-[11px] leading-tight text-ink-muted">
-              {p.row.address || 'No address'}
-            </span>
-          </div>
+          <Tooltip title="Open in Google Maps" placement="top-start">
+            <a
+              href={mapsHref(p.row)}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex w-full min-w-0 cursor-pointer flex-col justify-center gap-0.5 overflow-hidden"
+            >
+              <span className="flex min-w-0 items-center gap-1">
+                <span className="block truncate text-[13px] font-semibold leading-tight text-ink group-hover:text-primary group-hover:underline">
+                  {p.row.name}
+                </span>
+                <MdPlace size={13} className="shrink-0 text-ink-muted group-hover:text-primary" aria-hidden="true" />
+              </span>
+              <span className="block truncate text-[11px] leading-tight text-ink-muted">
+                {p.row.address || 'No address'}
+              </span>
+            </a>
+          </Tooltip>
         ),
       },
       {
