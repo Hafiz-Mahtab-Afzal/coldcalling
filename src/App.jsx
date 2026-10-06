@@ -93,6 +93,7 @@ const App = () => {
     try {
       const { data } = await http.get(apis.leads, {
         params: {
+          since: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
           country: filters.country || undefined,
           city: filters.city || undefined,
           category: filters.category || undefined,
