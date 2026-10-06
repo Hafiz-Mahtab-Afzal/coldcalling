@@ -12,6 +12,7 @@ import DayStrip from './components/DayStrip';
 import LeadsGrid from './components/LeadsGrid';
 import TargetDialog from './components/TargetDialog';
 import ReportPanel from './components/ReportPanel';
+import TypesPanel from './components/TypesPanel';
 import './css/style.css';
 
 const EMPTY_FILTERS = { country: '', city: '', category: '', outcome: '', day: '', website: '', search: '' };
@@ -36,6 +37,9 @@ const App = () => {
   const [progress, setProgress] = useState({ todayDone: 0, totalDone: 0, totalCallable: 0 });
   const [stats, setStats] = useState(null);
   const [months, setMonths] = useState([]);
+  const [types, setTypes] = useState([]);
+  const [typesLoading, setTypesLoading] = useState(false);
+  const [savingTypes, setSavingTypes] = useState(false);
   const [month, setMonth] = useState('');
 
   const [loading, setLoading] = useState(false);
@@ -166,6 +170,32 @@ const App = () => {
     }
   }, [filters.city, filters.country, month]);
 
+  const fetchTypes = useCallback(async () => {
+    setTypesLoading(true);
+    try {
+      const { data } = await http.get(apis.types);
+      setTypes(data.types || []);
+    } catch (err) {
+      setToast({ type: 'error', text: errorText(err) });
+    } finally {
+      setTypesLoading(false);
+    }
+  }, []);
+
+  const saveTypes = async (enabled) => {
+    setSavingTypes(true);
+    try {
+      const { data } = await http.put(apis.types, { enabled });
+      setToast({ type: 'success', text: `Saved. ${data.kept} leads kept, ${data.hidden} hidden.` });
+      await Promise.all([fetchTypes(), fetchLeads(), fetchToday(), fetchDays()]);
+    } catch (err) {
+      setToast({ type: 'error', text: errorText(err) });
+      throw err;
+    } finally {
+      setSavingTypes(false);
+    }
+  };
+
   useEffect(() => {
     if (!booting) fetchLeads();
   }, [booting, fetchLeads]);
@@ -185,6 +215,10 @@ const App = () => {
   useEffect(() => {
     if (!booting && view === 'report') fetchStats();
   }, [booting, view, fetchStats]);
+
+  useEffect(() => {
+    if (!booting && view === 'types') fetchTypes();
+  }, [booting, view, fetchTypes]);
 
   useEffect(() => {
     if (!filters.day) return;
@@ -325,8 +359,10 @@ const App = () => {
               />
             )}
           </>
-        ) : (
+        ) : view === 'report' ? (
           <ReportPanel stats={stats} months={months} month={month} onMonthChange={setMonth} city={filters.city} />
+        ) : (
+          <TypesPanel types={types} loading={typesLoading} saving={savingTypes} onSave={saveTypes} />
         )}
       </main>
 

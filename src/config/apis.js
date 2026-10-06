@@ -6,6 +6,7 @@ const apis = {
   filters: `${BASE}/api/leads/filters`,
   days: `${BASE}/api/leads/days`,
   today: `${BASE}/api/leads/today`,
+  types: `${BASE}/api/leads/types`,
   stats: `${BASE}/api/leads/stats`,
   health: `${BASE}/api/health`,
 };

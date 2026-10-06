@@ -42,7 +42,7 @@ const Header = ({
         </div>
 
         <nav className="ml-2 flex items-center gap-1 rounded-card bg-surface-muted p-1" aria-label="Views">
-          {['leads', 'report'].map((v) => (
+          {['leads', 'report', 'types'].map((v) => (
             <button
               key={v}
               type="button"
