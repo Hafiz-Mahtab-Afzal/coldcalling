@@ -174,6 +174,60 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
           ),
       },
       {
+        field: 'neighbour',
+        headerName: 'Nearby place that has a site',
+        width: 206,
+        sortable: false,
+        renderCell: (p) => {
+          const n = p.row.neighbour;
+          if (p.row.hasWebsite) return <span className="text-[12px] text-ink-muted">-</span>;
+          if (!n || !n.name) return <span className="text-[11px] text-ink-muted">None within 1 km</span>;
+          return (
+            <Tooltip title={`${n.category || 'Place'}, ${n.distanceM} m away. Open in Maps`} placement="top-start">
+              <a
+                href={n.mapsUrl || mapsHref({ name: n.name })}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex w-full min-w-0 cursor-pointer flex-col justify-center gap-0.5 overflow-hidden"
+              >
+                <span className="block truncate text-[12px] font-medium leading-tight text-ink group-hover:text-primary group-hover:underline">
+                  {n.name}
+                </span>
+                <span className="flex items-center gap-1 text-[11px] leading-tight text-ink-muted">
+                  <MdPlace size={11} aria-hidden="true" />
+                  {n.distanceM} m
+                </span>
+              </a>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        field: 'neighbourSite',
+        headerName: 'Site',
+        width: 64,
+        sortable: false,
+        align: 'center',
+        headerAlign: 'center',
+        renderCell: (p) => {
+          const n = p.row.neighbour;
+          if (p.row.hasWebsite || !n || !n.website) return null;
+          return (
+            <Tooltip title={`Open ${siteLabel(n.website)}`} placement="top">
+              <a
+                href={siteHref(n.website)}
+                target="_blank"
+                rel="noreferrer"
+                className="grid h-7 w-7 cursor-pointer place-items-center rounded-md border border-line bg-surface-muted text-primary transition-colors duration-200 hover:bg-white"
+                aria-label={`Open the website of ${n.name}`}
+              >
+                <MdOpenInNew size={14} />
+              </a>
+            </Tooltip>
+          );
+        },
+      },
+      {
         field: 'outcomes',
         headerName: 'Call outcome (tick all that happened)',
         width: 470,
