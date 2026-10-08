@@ -230,7 +230,7 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
       {
         field: 'outcomes',
         headerName: 'Call outcome (tick all that happened)',
-        width: 470,
+        width: 492,
         sortable: false,
         renderCell: (p) => (
           <div className="lock-zone w-full">
@@ -270,7 +270,7 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
           if (p.row.hasWebsite) return 'locked';
           return isDead(p.row.outcomes) ? 'dead' : '';
         }}
-        rowHeight={74}
+        rowHeight={92}
         columnHeaderHeight={46}
         checkboxSelection
         disableRowSelectionOnClick
