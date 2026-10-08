@@ -44,6 +44,13 @@ export const OUTCOMES = [
     bar: 'bg-violet-400',
   },
   {
+    value: 'will_think',
+    label: 'Will think about it',
+    short: 'Thinking',
+    chip: 'bg-sky-50 text-sky-700 border-sky-200',
+    bar: 'bg-sky-400',
+  },
+  {
     value: 'partner_ask',
     label: 'Will ask the partner',
     short: 'Ask partner',
