@@ -3,11 +3,12 @@ import Tooltip from '@mui/material/Tooltip';
 import { OUTCOMES, isDead } from '../lib/outcomes';
 
 const boxSx = {
-  padding: '1px',
-  color: '#94A3B8',
-  '& .MuiSvgIcon-root': { fontSize: 16 },
-  '&.Mui-checked': { color: '#2563EB' },
-  '&.Mui-disabled': { color: '#CBD5E1' },
+  padding: '2px',
+  color: 'rgb(var(--ink-faint))',
+  '& .MuiSvgIcon-root': { fontSize: 17 },
+  '&.Mui-checked': { color: 'rgb(var(--accent))' },
+  '&.Mui-disabled': { color: 'rgb(var(--line-strong))' },
+  '&:hover': { backgroundColor: 'rgb(var(--accent) / 0.08)' },
 };
 
 const OutcomeChecks = ({ selected, disabled, busy, onToggle, rowName }) => {
@@ -16,8 +17,8 @@ const OutcomeChecks = ({ selected, disabled, busy, onToggle, rowName }) => {
 
   return (
     <div
-      className={`flex w-full flex-wrap items-center gap-x-2 gap-y-0.5 py-1 transition-opacity duration-200 ${
-        busy ? 'opacity-70' : ''
+      className={`flex w-full flex-wrap items-center gap-x-2 gap-y-0.5 py-1 transition-opacity duration-180 ${
+        busy ? 'opacity-60' : ''
       }`}
     >
       {OUTCOMES.map((o) => {
@@ -27,8 +28,8 @@ const OutcomeChecks = ({ selected, disabled, busy, onToggle, rowName }) => {
           <label
             key={o.value}
             className={`flex items-center gap-0.5 text-[11px] leading-none ${
-              blocked ? 'cursor-not-allowed text-ink-muted/50' : 'cursor-pointer'
-            } ${on && !blocked ? 'font-semibold text-ink' : blocked ? '' : 'text-ink-muted'}`}
+              blocked ? 'cursor-not-allowed text-ink-faint/60' : 'cursor-pointer'
+            } ${on && !blocked ? 'font-semibold text-accent' : blocked ? '' : 'text-ink-muted hover:text-ink'}`}
           >
             <Checkbox
               checked={on}
@@ -37,7 +38,7 @@ const OutcomeChecks = ({ selected, disabled, busy, onToggle, rowName }) => {
               sx={boxSx}
               slotProps={{ input: { 'aria-label': `${o.label} for ${rowName}` } }}
             />
-            <span>{o.short}</span>
+            <span className="whitespace-nowrap">{o.short}</span>
           </label>
         );
 

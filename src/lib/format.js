@@ -18,6 +18,8 @@ export const siteHref = (url) => {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 };
 
+export const num = (n) => new Intl.NumberFormat('en-GB').format(n || 0);
+
 export const compact = (n) => new Intl.NumberFormat('en', { notation: 'compact' }).format(n || 0);
 
 export const mapsHref = ({ mapsUrl, cid, lat, lng, placeId, name, address }) => {

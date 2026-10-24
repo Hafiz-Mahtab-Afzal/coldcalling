@@ -7,29 +7,29 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { DataGrid } from '@mui/x-data-grid';
 import { MdSearch, MdRestaurant, MdSelectAll, MdDeselect, MdSave } from 'react-icons/md';
 
-const BLUE = '#2563EB';
+const HEAD = 'rgb(var(--card))';
 
 const FOOD = /restaurant|cafe|coffee|snack|pizza|kebab|sushi|tapas|bar\b|barbecue|pastry|bakery|seafood|fish|grill|food|espresso|diner|bistro|takeaway|take away|canteen|steak|burger|chocolate|ice cream|juice|tea house|brunch|brewpub/i;
 
 const gridSx = {
-  backgroundColor: '#FFFFFF',
-  border: '1px solid #E4ECFC',
-  borderRadius: '10px',
+  backgroundColor: 'rgb(var(--card))',
+  border: 'none',
+  borderRadius: '22px',
   fontSize: 13,
   '& .MuiDataGrid-columnHeaders': {
-    backgroundColor: BLUE,
+    backgroundColor: HEAD,
     borderBottom: 'none',
-    '--DataGrid-containerBackground': BLUE,
-    '--DataGrid-rowBorderColor': BLUE,
+    '--DataGrid-containerBackground': HEAD,
+    '--DataGrid-rowBorderColor': 'rgb(var(--line))',
   },
   '& .MuiDataGrid-columnHeader, & .MuiDataGrid-columnHeaders .MuiDataGrid-filler, & .MuiDataGrid-columnHeaders .MuiDataGrid-scrollbarFiller':
-    { backgroundColor: BLUE },
-  '& .MuiDataGrid-columnHeaderTitle': { fontWeight: 700, fontSize: 12, color: '#FFFFFF' },
+    { backgroundColor: HEAD },
+  '& .MuiDataGrid-columnHeaderTitle': { fontWeight: 500, fontSize: 11.5, color: 'rgb(var(--ink-muted))' },
   '& .MuiDataGrid-columnHeaders .MuiDataGrid-sortIcon, & .MuiDataGrid-columnHeaders .MuiDataGrid-iconButtonContainer svg':
-    { color: '#FFFFFF' },
-  '& .MuiDataGrid-columnHeader .MuiDataGrid-columnSeparator': { color: 'rgba(255,255,255,0.28)' },
+    { color: 'rgb(var(--ink-muted))' },
+  '& .MuiDataGrid-columnHeader .MuiDataGrid-columnSeparator': { display: 'none' },
   '& .MuiDataGrid-cell': {
-    borderColor: '#E4ECFC',
+    borderColor: 'rgb(var(--line))',
     display: 'flex',
     alignItems: 'center',
     overflow: 'hidden',
@@ -38,10 +38,10 @@ const gridSx = {
     paddingLeft: '10px',
     paddingRight: '10px',
   },
-  '& .MuiDataGrid-row:hover': { backgroundColor: '#F8FAFC' },
-  '& .MuiDataGrid-row.off': { backgroundColor: '#F6F6F5' },
+  '& .MuiDataGrid-row:hover': { backgroundColor: 'rgb(var(--card-2))' },
+  '& .MuiDataGrid-row.off': { backgroundColor: 'rgb(var(--card-2))' },
   '& .MuiDataGrid-row.off .MuiDataGrid-cell:not([data-field="pick"])': { opacity: 0.45 },
-  '& .MuiDataGrid-footerContainer': { borderColor: '#E4ECFC', backgroundColor: '#F8FAFC' },
+  '& .MuiDataGrid-footerContainer': { borderColor: 'rgb(var(--line))', backgroundColor: 'rgb(var(--card-2))' },
 };
 
 const TypesPanel = ({ types, loading, saving, onSave }) => {
@@ -79,7 +79,7 @@ const TypesPanel = ({ types, loading, saving, onSave }) => {
           checked={p.row.on}
           onChange={(e) => toggle(p.row.category, e.target.checked)}
           slotProps={{ input: { 'aria-label': `Keep ${p.row.category}` } }}
-          sx={{ padding: '2px', color: '#94A3B8', '&.Mui-checked': { color: BLUE } }}
+          sx={{ padding: '2px', color: 'rgb(var(--ink-faint))', '&.Mui-checked': { color: 'rgb(var(--accent))' } }}
         />
       ),
     },
@@ -101,7 +101,7 @@ const TypesPanel = ({ types, loading, saving, onSave }) => {
       align: 'right',
       headerAlign: 'right',
       renderCell: (p) => (
-        <span className={`font-mono text-[12px] ${p.row.sellable ? 'font-semibold text-accent' : 'text-ink-muted'}`}>
+        <span className={`font-mono text-[12px] ${p.row.sellable ? 'font-semibold text-ok' : 'text-ink-muted'}`}>
           {p.row.sellable}
         </span>
       ),
@@ -145,7 +145,7 @@ const TypesPanel = ({ types, loading, saving, onSave }) => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="rounded-card border border-line bg-surface-muted px-3 py-1.5 font-mono text-[12px] text-ink">
+          <span className="rounded-card border border-line bg-card-2 px-3 py-1.5 font-mono text-[12px] text-ink">
             {chosen.size}/{types.length} types, {keptSellable} sellable
           </span>
           <Button
@@ -168,7 +168,7 @@ const TypesPanel = ({ types, loading, saving, onSave }) => {
           onChange={(e) => setQ(e.target.value)}
           sx={{
             minWidth: 230,
-            '& .MuiInputBase-root': { backgroundColor: '#FFFFFF', height: 38 },
+            '& .MuiInputBase-root': { backgroundColor: 'rgb(var(--card))', height: 38 },
             '& .MuiInputBase-input': { fontSize: 13 },
           }}
           slotProps={{

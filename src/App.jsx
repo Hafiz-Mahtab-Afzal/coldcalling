@@ -7,6 +7,9 @@ import { MdInbox, MdWarning } from 'react-icons/md';
 import http, { errorText } from './lib/http';
 import apis from './config/apis';
 import Header from './components/Header';
+import StatTiles from './components/StatTiles';
+import PageHeading from './components/PageHeading';
+import FilterBar from './components/FilterBar';
 import OutcomeTabs from './components/OutcomeTabs';
 import DayStrip from './components/DayStrip';
 import LeadsGrid from './components/LeadsGrid';
@@ -17,7 +20,7 @@ import './css/style.css';
 
 const EMPTY_FILTERS = { country: '', city: '', category: '', outcome: '', day: '', website: '', search: '' };
 
-const App = () => {
+const App = ({ mode, onToggleMode }) => {
   const [view, setView] = useState('leads');
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -279,6 +282,23 @@ const App = () => {
     setPage(1);
   };
 
+  const activeFilters = ['country', 'city', 'category', 'outcome', 'day', 'website'].filter((k) => filters[k]).length;
+  const subtitle = `${filters.city || filters.country || 'All cities'} · ${
+    activeFilters || debouncedSearch ? `${total.toLocaleString('en-GB')} of ${scopeTotal.toLocaleString('en-GB')}` : `${total.toLocaleString('en-GB')} leads`
+  }`;
+
+  const resetFilters = () => {
+    setFilters(EMPTY_FILTERS);
+    setPage(1);
+  };
+
+  const refreshAll = () => {
+    fetchLeads();
+    fetchDays();
+    fetchToday();
+    if (view === 'report') fetchStats();
+  };
+
   if (booting) {
     return (
       <div className="grid min-h-screen place-items-center">
@@ -290,8 +310,8 @@ const App = () => {
   if (bootError) {
     return (
       <div className="grid min-h-screen place-items-center px-4">
-        <div className="max-w-sm rounded-card border border-line bg-surface-card p-6 text-center shadow-card">
-          <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-red-50 text-danger">
+        <div className="max-w-sm rounded-card border border-line bg-card p-7 text-center shadow-card">
+          <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-bad-soft text-bad">
             <MdWarning size={24} aria-hidden="true" />
           </span>
           <h1 className="mt-4 text-[16px] font-bold text-ink">Server not responding</h1>
@@ -305,29 +325,35 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-shell">
       <Header
-        filters={filters}
-        countries={countries}
-        cities={cities}
-        categories={categories}
-        onChange={updateFilters}
-        onRefresh={() => {
-          fetchLeads();
-          fetchDays();
-          fetchToday();
-          if (view === 'report') fetchStats();
-        }}
-        loading={loading}
-        progress={progress}
-        dailyTarget={dailyTarget}
         view={view}
         onViewChange={setView}
+        onRefresh={refreshAll}
+        loading={loading}
+        mode={mode}
+        onToggleMode={onToggleMode}
       />
 
-      <main className="mx-auto max-w-[1600px] space-y-4 px-4 py-4">
+      <main className="mx-auto max-w-[1680px] space-y-3.5 px-3 pb-10 pt-1 sm:space-y-4 sm:px-5">
         {view === 'leads' ? (
           <>
+            <PageHeading
+              title="Leads"
+              subtitle={subtitle}
+            />
+
+            <StatTiles progress={progress} dailyTarget={dailyTarget} />
+
+            <FilterBar
+              filters={filters}
+              countries={countries}
+              cities={cities}
+              categories={categories}
+              onChange={updateFilters}
+              onReset={resetFilters}
+            />
+
             <OutcomeTabs
               active={filters.outcome}
               counts={counts}
@@ -337,7 +363,7 @@ const App = () => {
             <DayStrip days={days} active={filters.day} onChange={(day) => updateFilters({ day })} />
 
             {!cities.length ? (
-              <div className="grid place-items-center gap-2 rounded-card border border-dashed border-line bg-surface-card py-20 text-center">
+              <div className="grid place-items-center gap-2 rounded-card border border-dashed border-line-strong bg-card py-20 text-center">
                 <MdInbox size={28} className="text-ink-muted" aria-hidden="true" />
                 <p className="text-[14px] font-semibold text-ink">No leads yet</p>
                 <p className="max-w-sm text-[12px] text-ink-muted">

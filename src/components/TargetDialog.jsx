@@ -1,12 +1,11 @@
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import Button from '@mui/material/Button';
 import { MdCheckCircle } from 'react-icons/md';
 
 const TargetDialog = ({ open, day, count, onClose }) => (
   <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth aria-labelledby="target-title">
     <DialogContent sx={{ padding: '32px 28px', textAlign: 'center' }}>
-      <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-50 text-accent">
+      <span className="mx-auto grid h-14 w-14 place-items-center rounded-pill bg-ok-soft text-ok">
         <MdCheckCircle size={30} aria-hidden="true" />
       </span>
       <h2 id="target-title" className="mt-4 text-[18px] font-bold text-ink">
@@ -16,9 +15,13 @@ const TargetDialog = ({ open, day, count, onClose }) => (
         All <span className="font-mono font-semibold text-ink">{count}</span> leads in this batch have an outcome
         recorded. Target cleared for today.
       </p>
-      <Button onClick={onClose} variant="contained" color="success" fullWidth sx={{ marginTop: '22px', height: 40 }}>
+      <button
+        type="button"
+        onClick={onClose}
+        className="mt-6 h-12 w-full cursor-pointer rounded-xl bg-accent text-[14px] font-semibold text-accent-ink transition-opacity duration-180 hover:opacity-90"
+      >
         Continue
-      </Button>
+      </button>
     </DialogContent>
   </Dialog>
 );

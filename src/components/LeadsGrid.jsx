@@ -6,50 +6,71 @@ import { MdOpenInNew, MdCall, MdStar, MdLock, MdPlace } from 'react-icons/md';
 import { FaWhatsapp } from 'react-icons/fa6';
 import OutcomeChecks from './OutcomeChecks';
 import { isDead } from '../lib/outcomes';
-import { mapsHref, siteHref, siteLabel, telLink, waLink } from '../lib/format';
+import { mapsHref, num, siteHref, siteLabel, telLink, waLink } from '../lib/format';
 
-const BLUE = '#2563EB';
+const SURFACE = 'rgb(var(--card))';
 
 const gridSx = {
-  backgroundColor: '#FFFFFF',
-  border: '1px solid #E4ECFC',
-  borderRadius: '10px',
+  backgroundColor: SURFACE,
+  border: 'none',
+  borderRadius: '22px',
   fontSize: 13,
-  '& .MuiDataGrid-columnHeaders': {
-    backgroundColor: BLUE,
-    borderBottom: 'none',
-    '--DataGrid-containerBackground': BLUE,
-    '--DataGrid-rowBorderColor': BLUE,
+  fontFamily: "'DM Sans', ui-sans-serif, system-ui, sans-serif",
+  color: 'rgb(var(--ink))',
+  '--DataGrid-containerBackground': SURFACE,
+  '--DataGrid-rowBorderColor': 'rgb(var(--line))',
+  '& .MuiDataGrid-columnHeaders': { borderBottom: '1px solid rgb(var(--line))' },
+  '& .MuiDataGrid-columnHeader': { backgroundColor: SURFACE },
+  '& .MuiDataGrid-columnHeaders .MuiDataGrid-filler': { backgroundColor: SURFACE },
+  '& .MuiDataGrid-columnHeaders .MuiDataGrid-scrollbarFiller': { backgroundColor: SURFACE },
+  '& .MuiDataGrid-columnHeader:focus': { outlineOffset: '-2px' },
+  '& .MuiDataGrid-columnHeader:focus-within': { outlineOffset: '-2px' },
+  '& .MuiDataGrid-columnHeaderTitle': {
+    fontWeight: 500,
+    fontSize: 11.5,
+    color: 'rgb(var(--ink-muted))',
   },
-  '& .MuiDataGrid-columnHeader, & .MuiDataGrid-columnHeaders .MuiDataGrid-filler, & .MuiDataGrid-columnHeaders .MuiDataGrid-scrollbarFiller':
-    { backgroundColor: BLUE },
-  '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': { outlineOffset: '-2px' },
-  '& .MuiDataGrid-columnHeaderTitle': { fontWeight: 700, fontSize: 12, color: '#FFFFFF' },
-  '& .MuiDataGrid-columnHeaders .MuiDataGrid-sortIcon, & .MuiDataGrid-columnHeaders .MuiDataGrid-menuIcon svg, & .MuiDataGrid-columnHeaders .MuiDataGrid-iconButtonContainer svg':
-    { color: '#FFFFFF' },
-  '& .MuiDataGrid-columnHeaderCheckbox .MuiCheckbox-root': { color: '#FFFFFF' },
-  '& .MuiDataGrid-columnHeader .MuiDataGrid-columnSeparator': { color: 'rgba(255,255,255,0.28)' },
+  '& .MuiDataGrid-columnHeaders .MuiDataGrid-sortIcon': { color: 'rgb(var(--ink-faint))' },
+  '& .MuiDataGrid-columnHeaders .MuiDataGrid-menuIcon svg': { color: 'rgb(var(--ink-faint))' },
+  '& .MuiDataGrid-columnHeaders .MuiDataGrid-iconButtonContainer svg': { color: 'rgb(var(--ink-faint))' },
+  '& .MuiDataGrid-columnHeaderCheckbox .MuiCheckbox-root': { color: 'rgb(var(--ink-faint))' },
+  '& .MuiDataGrid-columnHeaderCheckbox .MuiCheckbox-root.Mui-checked': { color: 'rgb(var(--accent))' },
+  '& .MuiDataGrid-columnHeader .MuiDataGrid-columnSeparator': { display: 'none' },
   '& .MuiDataGrid-cell': {
-    borderColor: '#E4ECFC',
+    borderColor: 'rgb(var(--line))',
     display: 'flex',
     alignItems: 'center',
     overflow: 'hidden',
     minWidth: 0,
     lineHeight: 1.4,
-    paddingLeft: '10px',
-    paddingRight: '10px',
+    paddingLeft: '14px',
+    paddingRight: '14px',
   },
-  '& .MuiDataGrid-row:hover': { backgroundColor: '#F8FAFC' },
-  '& .MuiDataGrid-row.locked': { backgroundColor: '#FBFCFE' },
-  '& .MuiDataGrid-row.locked .lock-zone': { opacity: 0.45, cursor: 'not-allowed' },
-  '& .MuiDataGrid-row.dead': { backgroundColor: '#F6F6F5' },
-  '& .MuiDataGrid-row.dead .MuiDataGrid-cell:not([data-field="outcomes"])': { opacity: 0.45 },
-  '& .MuiDataGrid-row.dead:hover': { backgroundColor: '#F1F1F0' },
-  '& .MuiDataGrid-footerContainer': { borderColor: '#E4ECFC', backgroundColor: '#F8FAFC' },
-  '& .MuiDataGrid-checkboxInput.Mui-checked': { color: BLUE },
-  '& .MuiDataGrid-row.Mui-selected': { backgroundColor: '#EFF5FF' },
-  '& .MuiDataGrid-row.Mui-selected:hover': { backgroundColor: '#E6EEFE' },
+  '& .MuiDataGrid-cell:focus': { outlineOffset: '-2px' },
+  '& .MuiDataGrid-cell:focus-within': { outlineOffset: '-2px' },
+  '& .MuiDataGrid-row:hover': { backgroundColor: 'rgb(var(--card-2))' },
+  '& .MuiDataGrid-row.locked': { backgroundColor: 'rgb(var(--card-2) / 0.55)' },
+  '& .MuiDataGrid-row.locked .lock-zone': { opacity: 0.5, cursor: 'not-allowed' },
+  '& .MuiDataGrid-row.dead': { backgroundColor: 'rgb(var(--card-2))' },
+  '& .MuiDataGrid-row.dead .MuiDataGrid-cell:not([data-field="outcomes"])': { opacity: 0.42 },
+  '& .MuiDataGrid-row.dead:hover': { backgroundColor: 'rgb(var(--line))' },
+  '& .MuiDataGrid-footerContainer': {
+    borderTop: '1px solid rgb(var(--line))',
+    backgroundColor: SURFACE,
+    minHeight: 52,
+  },
+  '& .MuiTablePagination-root': { color: 'rgb(var(--ink-muted))', fontSize: 12.5 },
+  '& .MuiTablePagination-selectLabel': { color: 'rgb(var(--ink-muted))', fontSize: 12.5 },
+  '& .MuiTablePagination-displayedRows': { color: 'rgb(var(--ink-muted))', fontSize: 12.5 },
+  '& .MuiDataGrid-checkboxInput': { color: 'rgb(var(--ink-faint))' },
+  '& .MuiDataGrid-checkboxInput.Mui-checked': { color: 'rgb(var(--accent))' },
+  '& .MuiDataGrid-row.Mui-selected': { backgroundColor: 'rgb(var(--accent-soft))' },
+  '& .MuiDataGrid-row.Mui-selected:hover': { backgroundColor: 'rgb(var(--accent) / 0.16)' },
+  '& .MuiDataGrid-overlay': { backgroundColor: SURFACE, color: 'rgb(var(--ink-muted))' },
 };
+
+const iconLink =
+  'grid h-7 w-7 shrink-0 cursor-pointer place-items-center rounded-lg border border-line bg-card transition-colors duration-180 hover:border-line-strong';
 
 const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, onOutcomeToggle, savingId }) => {
   const columns = useMemo(
@@ -57,9 +78,9 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
       {
         field: 'serial',
         headerName: '#',
-        width: 46,
+        width: 50,
         sortable: false,
-        renderCell: (p) => <span className="font-mono text-[12px] text-ink-muted">{p.row.serial}</span>,
+        renderCell: (p) => <span className="font-mono text-[12px] text-ink-faint">{p.row.serial}</span>,
       },
       {
         field: 'name',
@@ -75,10 +96,10 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
               className="group flex w-full min-w-0 cursor-pointer flex-col justify-center gap-0.5 overflow-hidden"
             >
               <span className="flex min-w-0 items-center gap-1">
-                <span className="block truncate text-[13px] font-semibold leading-tight text-ink group-hover:text-primary group-hover:underline">
+                <span className="block truncate text-[13px] font-semibold leading-tight text-ink group-hover:text-accent">
                   {p.row.name}
                 </span>
-                <MdPlace size={13} className="shrink-0 text-ink-muted group-hover:text-primary" aria-hidden="true" />
+                <MdPlace size={13} className="shrink-0 text-ink-faint group-hover:text-accent" aria-hidden="true" />
               </span>
               <span className="block truncate text-[11px] leading-tight text-ink-muted">
                 {p.row.address || 'No address'}
@@ -92,17 +113,13 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
         headerName: 'Phone',
         width: 198,
         renderCell: (p) => {
-          if (!p.row.phone) return <span className="text-[12px] text-ink-muted">No phone</span>;
+          if (!p.row.phone) return <span className="text-[12px] text-ink-faint">No phone</span>;
           return (
-            <div className="flex w-full min-w-0 items-center gap-1">
+            <div className="flex w-full min-w-0 items-center gap-1.5">
               <span className="block truncate font-mono text-[12px] text-ink">{p.row.phone}</span>
               <Tooltip title="Call">
-                <a
-                  href={telLink(p.row.phone)}
-                  className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-md border border-line text-primary transition-colors duration-200 hover:bg-surface-muted"
-                  aria-label={`Call ${p.row.name}`}
-                >
-                  <MdCall size={13} />
+                <a href={telLink(p.row.phone)} className={`${iconLink} text-accent`} aria-label={`Call ${p.row.name}`}>
+                  <MdCall size={14} />
                 </a>
               </Tooltip>
               <Tooltip title="WhatsApp">
@@ -110,10 +127,10 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
                   href={waLink(p.row.phone)}
                   target="_blank"
                   rel="noreferrer"
-                  className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-md border border-line text-accent transition-colors duration-200 hover:bg-surface-muted"
+                  className={`${iconLink} text-ok`}
                   aria-label={`WhatsApp ${p.row.name}`}
                 >
-                  <FaWhatsapp size={13} />
+                  <FaWhatsapp size={14} />
                 </a>
               </Tooltip>
             </div>
@@ -130,13 +147,13 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
               href={siteHref(p.row.website)}
               target="_blank"
               rel="noreferrer"
-              className="flex w-full min-w-0 cursor-pointer items-center gap-1 overflow-hidden text-[12px] font-medium text-primary hover:underline"
+              className="flex w-full min-w-0 cursor-pointer items-center gap-1 overflow-hidden text-[12px] font-medium text-accent hover:underline"
             >
               <span className="block truncate">{siteLabel(p.row.website)}</span>
               <MdOpenInNew size={13} className="shrink-0" aria-hidden="true" />
             </a>
           ) : (
-            <span className="inline-flex shrink-0 items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] font-semibold leading-none text-accent">
+            <span className="inline-flex shrink-0 items-center rounded-pill border border-ok/25 bg-ok-soft px-2.5 py-1 text-[11px] font-semibold leading-none text-ok-ink">
               No website
             </span>
           ),
@@ -152,25 +169,25 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
       {
         field: 'reviewCount',
         headerName: 'Reviews',
-        width: 78,
+        width: 80,
         align: 'right',
         headerAlign: 'right',
-        renderCell: (p) => <span className="font-mono text-[12px] text-ink">{p.row.reviewCount}</span>,
+        renderCell: (p) => <span className="tabular text-[12px] text-ink">{num(p.row.reviewCount)}</span>,
       },
       {
         field: 'rating',
         headerName: 'Rating',
-        width: 70,
+        width: 74,
         align: 'right',
         headerAlign: 'right',
         renderCell: (p) =>
           p.row.rating ? (
             <span className="inline-flex items-center gap-0.5 font-mono text-[12px] text-ink">
-              <MdStar size={13} className="text-amber-500" aria-hidden="true" />
+              <MdStar size={13} className="text-warn" aria-hidden="true" />
               {p.row.rating.toFixed(1)}
             </span>
           ) : (
-            <span className="text-[12px] text-ink-muted">-</span>
+            <span className="text-[12px] text-ink-faint">-</span>
           ),
       },
       {
@@ -180,8 +197,8 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
         sortable: false,
         renderCell: (p) => {
           const n = p.row.neighbour;
-          if (p.row.hasWebsite) return <span className="text-[12px] text-ink-muted">-</span>;
-          if (!n || !n.name) return <span className="text-[11px] text-ink-muted">None within 1 km</span>;
+          if (p.row.hasWebsite) return <span className="text-[12px] text-ink-faint">-</span>;
+          if (!n || !n.name) return <span className="text-[11px] text-ink-faint">None within 1 km</span>;
           return (
             <Tooltip title={`${n.category || 'Place'}, ${n.distanceM} m away. Open in Maps`} placement="top-start">
               <a
@@ -190,7 +207,7 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
                 rel="noreferrer"
                 className="group flex w-full min-w-0 cursor-pointer flex-col justify-center gap-0.5 overflow-hidden"
               >
-                <span className="block truncate text-[12px] font-medium leading-tight text-ink group-hover:text-primary group-hover:underline">
+                <span className="block truncate text-[12px] font-medium leading-tight text-ink group-hover:text-accent">
                   {n.name}
                 </span>
                 <span className="flex items-center gap-1 text-[11px] leading-tight text-ink-muted">
@@ -218,7 +235,7 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
                 href={siteHref(n.website)}
                 target="_blank"
                 rel="noreferrer"
-                className="grid h-7 w-7 cursor-pointer place-items-center rounded-md border border-line bg-surface-muted text-primary transition-colors duration-200 hover:bg-white"
+                className={`${iconLink} h-8 w-8 text-accent`}
                 aria-label={`Open the website of ${n.name}`}
               >
                 <MdOpenInNew size={14} />
@@ -235,7 +252,7 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
         renderCell: (p) => (
           <div className="lock-zone w-full">
             {p.row.hasWebsite ? (
-              <span className="flex items-center gap-1.5 text-[11px] text-ink-muted">
+              <span className="flex items-center gap-1.5 text-[11px] text-ink-faint">
                 <MdLock size={14} aria-hidden="true" />
                 Already has a website
               </span>
@@ -255,7 +272,7 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
   );
 
   return (
-    <Box className="w-full overflow-x-auto">
+    <Box className="w-full overflow-hidden rounded-tile bg-card shadow-card">
       <DataGrid
         rows={rows}
         columns={columns}
@@ -271,7 +288,7 @@ const LeadsGrid = ({ rows, loading, total, page, pageSize, onPaginationChange, o
           return isDead(p.row.outcomes) ? 'dead' : '';
         }}
         rowHeight={92}
-        columnHeaderHeight={46}
+        columnHeaderHeight={48}
         checkboxSelection
         disableRowSelectionOnClick
         disableColumnMenu

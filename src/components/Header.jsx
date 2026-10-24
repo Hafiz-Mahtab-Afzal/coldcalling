@@ -1,215 +1,73 @@
-import { useEffect, useState } from 'react';
-import { MdPhoneInTalk, MdSearch, MdRefresh, MdTrackChanges, MdDoneAll } from 'react-icons/md';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
+import { MdPhoneInTalk, MdRefresh, MdLightMode, MdDarkMode } from 'react-icons/md';
 import Tooltip from '@mui/material/Tooltip';
 
-const selectSx = {
-  minWidth: 150,
-  '& .MuiInputBase-root': { backgroundColor: '#FFFFFF', height: 38 },
-  '& .MuiInputBase-input': { fontSize: 13 },
-};
+const VIEWS = [
+  { value: 'leads', label: 'Leads' },
+  { value: 'report', label: 'Report' },
+  { value: 'types', label: 'Types' },
+];
 
-const useNativePickers = () => {
-  const [native, setNative] = useState(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return false;
-    return window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
-  });
-
-  useEffect(() => {
-    if (!window.matchMedia) return undefined;
-    const mq = window.matchMedia('(max-width: 900px), (pointer: coarse)');
-    const onChange = (e) => setNative(e.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
-
-  return native;
-};
-
-const Picker = ({ label, value, onChange, options, native, width }) => (
-  <TextField
-    select
-    size="small"
-    label={label}
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    sx={width ? { ...selectSx, minWidth: width } : selectSx}
-    slotProps={native ? { select: { native: true } } : undefined}
-  >
-    {options.map((o) =>
-      native ? (
-        <option key={o.value} value={o.value}>
-          {o.native ?? o.label}
-        </option>
-      ) : (
-        <MenuItem key={o.value} value={o.value}>
-          {o.label}
-          {o.hint && <span className="ml-1.5 font-mono text-[11px] text-ink-muted">{o.hint}</span>}
-        </MenuItem>
-      )
-    )}
-  </TextField>
+const RoundButton = ({ label, onClick, children, spinning }) => (
+  <Tooltip title={label}>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-pill bg-card text-ink-muted shadow-card transition-colors duration-180 hover:text-ink"
+    >
+      <span className={spinning ? 'block animate-spin text-accent' : 'block'}>{children}</span>
+    </button>
+  </Tooltip>
 );
 
-const Header = ({
-  filters,
-  countries,
-  cities,
-  categories,
-  onChange,
-  onRefresh,
-  loading,
-  progress,
-  dailyTarget,
-  view,
-  onViewChange,
-}) => {
-  const native = useNativePickers();
-  const cityOptions = filters.country ? cities.filter((c) => c.country === filters.country) : cities;
-  const { todayDone = 0, totalDone = 0, totalCallable = 0 } = progress || {};
-  const pct = dailyTarget ? Math.min(100, Math.round((todayDone / dailyTarget) * 100)) : 0;
-  const totalPct = totalCallable ? Math.round((totalDone / totalCallable) * 100) : 0;
-
-  return (
-    <header className="sticky top-0 z-20 border-b border-line bg-surface-card">
-      <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-3 px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-card bg-primary text-primary-fg">
-            <MdPhoneInTalk size={18} aria-hidden="true" />
-          </span>
-          <div className="leading-tight">
-            <h1 className="text-[15px] font-bold text-ink">Lead Caller</h1>
-            <p className="text-[11px] text-ink-muted">Restaurant outreach tracker</p>
-          </div>
+const Header = ({ view, onViewChange, onRefresh, loading, mode, onToggleMode }) => (
+  <header className="sticky top-0 z-30 bg-shell/90 px-3 pb-2.5 pt-3 backdrop-blur-md sm:px-5 sm:pt-4">
+    <div className="mx-auto flex max-w-[1680px] flex-wrap items-center gap-2 sm:gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-2 rounded-pill bg-card py-1.5 pl-1.5 pr-3 shadow-card sm:flex-none sm:gap-2.5 sm:pr-4">
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-pill bg-accent text-accent-ink">
+          <MdPhoneInTalk size={17} aria-hidden="true" />
+        </span>
+        <div className="min-w-0 leading-none">
+          <h1 className="truncate text-[14px] font-bold tracking-tight text-ink sm:text-[15px]">Lead Caller</h1>
+          <p className="mt-0.5 truncate text-[11px] text-ink-muted">Restaurant outreach</p>
         </div>
+      </div>
 
-        <nav className="ml-2 flex items-center gap-1 rounded-card bg-surface-muted p-1" aria-label="Views">
-          {['leads', 'report', 'types'].map((v) => (
+      <div className="flex shrink-0 items-center gap-2 sm:order-last sm:ml-auto">
+        <RoundButton
+          label={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          onClick={onToggleMode}
+        >
+          {mode === 'dark' ? <MdLightMode size={18} /> : <MdDarkMode size={18} />}
+        </RoundButton>
+        <RoundButton label="Reload leads" onClick={onRefresh} spinning={loading}>
+          <MdRefresh size={19} />
+        </RoundButton>
+      </div>
+
+      <nav
+        className="flex w-full min-w-0 items-center gap-1 rounded-pill bg-card p-1 shadow-card sm:w-auto"
+        aria-label="Views"
+      >
+        {VIEWS.map((v) => {
+          const on = view === v.value;
+          return (
             <button
-              key={v}
+              key={v.value}
               type="button"
-              onClick={() => onViewChange(v)}
-              aria-current={view === v}
-              className={`cursor-pointer rounded-md px-3 py-1.5 text-[12px] font-semibold capitalize transition-colors duration-200 ${
-                view === v ? 'bg-surface-card text-primary shadow-card' : 'text-ink-muted hover:text-ink'
+              onClick={() => onViewChange(v.value)}
+              aria-current={on ? 'page' : undefined}
+              className={`flex-1 cursor-pointer rounded-pill px-3.5 py-2 text-[12.5px] font-semibold transition-colors duration-180 sm:flex-none sm:px-5 sm:text-[13px] ${
+                on ? 'bg-ink text-card' : 'text-ink-muted hover:text-ink'
               }`}
             >
-              {v}
+              {v.label}
             </button>
-          ))}
-        </nav>
-
-        <div className="ml-auto flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 rounded-card border border-line bg-surface-muted px-3 py-1.5">
-            <MdDoneAll size={15} className="text-primary" aria-hidden="true" />
-            <span className="font-mono text-[13px] font-semibold text-ink">
-              {totalDone}/{totalCallable}
-            </span>
-            <span className="text-[11px] text-ink-muted">total</span>
-            <span className="h-1.5 w-14 overflow-hidden rounded-full bg-line" role="presentation">
-              <span
-                className="block h-full rounded-full bg-primary transition-all duration-300"
-                style={{ width: `${totalPct}%` }}
-              />
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 rounded-card border border-line bg-surface-muted px-3 py-1.5">
-            <MdTrackChanges size={15} className="text-accent" aria-hidden="true" />
-            <span className="font-mono text-[13px] font-semibold text-ink">
-              {todayDone}/{dailyTarget}
-            </span>
-            <span className="text-[11px] text-ink-muted">today</span>
-            <span className="h-1.5 w-14 overflow-hidden rounded-full bg-line" role="presentation">
-              <span
-                className="block h-full rounded-full bg-accent transition-all duration-300"
-                style={{ width: `${pct}%` }}
-              />
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-2 border-t border-line px-4 py-2.5">
-        <Picker
-          label="Country"
-          value={filters.country}
-          onChange={(v) => onChange({ country: v, city: '' })}
-          native={native}
-          options={[
-            { value: '', label: 'All countries' },
-            ...countries.map((c) => ({ value: c, label: c })),
-          ]}
-        />
-
-        <Picker
-          label="City"
-          value={filters.city}
-          onChange={(v) => onChange({ city: v, day: '', category: '' })}
-          native={native}
-          options={[
-            { value: '', label: 'All cities' },
-            ...cityOptions.map((c) => ({ value: c.city, label: `${c.city} (${c.total})` })),
-          ]}
-        />
-
-        <Picker
-          label="Type"
-          value={filters.category}
-          onChange={(v) => onChange({ category: v })}
-          native={native}
-          width={196}
-          options={[
-            { value: '', label: 'All types' },
-            ...categories.map((c) => ({
-              value: c.category,
-              label: c.category,
-              hint: `${c.sellable}/${c.total}`,
-              native: `${c.category} — ${c.sellable}/${c.total}`,
-            })),
-          ]}
-        />
-
-        <Picker
-          label="Website"
-          value={filters.website}
-          onChange={(v) => onChange({ website: v })}
-          native={native}
-          width={140}
-          options={[
-            { value: '', label: 'All' },
-            { value: 'no', label: 'No website' },
-            { value: 'yes', label: 'Has website' },
-          ]}
-        />
-
-        <TextField
-          size="small"
-          placeholder="Search name, phone, category"
-          value={filters.search}
-          onChange={(e) => onChange({ search: e.target.value })}
-          sx={{
-            minWidth: 260,
-            '& .MuiInputBase-root': { backgroundColor: '#FFFFFF', height: 38 },
-            '& .MuiInputBase-input': { fontSize: 13 },
-          }}
-          slotProps={{
-            input: {
-              startAdornment: <MdSearch size={17} className="mr-2 shrink-0 text-ink-muted" aria-hidden="true" />,
-            },
-          }}
-        />
-
-        <Tooltip title="Reload leads">
-          <IconButton onClick={onRefresh} size="small" aria-label="Reload leads" className="!border !border-line !bg-white">
-            <MdRefresh size={17} className={loading ? 'animate-spin text-primary' : 'text-ink-muted'} />
-          </IconButton>
-        </Tooltip>
-      </div>
-    </header>
-  );
-};
+          );
+        })}
+      </nav>
+    </div>
+  </header>
+);
 
 export default Header;

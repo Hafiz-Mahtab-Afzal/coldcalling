@@ -1,25 +1,39 @@
+const token = (name) => ({ opacityValue }) =>
+  opacityValue === undefined ? `rgb(var(${name}))` : `rgb(var(${name}) / ${opacityValue})`;
+
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ['class', '[data-theme="dark"]'],
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        primary: { DEFAULT: '#2563EB', fg: '#FFFFFF', soft: '#3B82F6' },
-        accent: { DEFAULT: '#059669', fg: '#FFFFFF' },
-        surface: { DEFAULT: '#F8FAFC', card: '#FFFFFF', muted: '#F1F5FD' },
-        ink: { DEFAULT: '#0F172A', muted: '#475569' },
-        line: '#E4ECFC',
-        danger: { DEFAULT: '#DC2626', fg: '#FFFFFF' },
+        shell: token('--shell'),
+        bg: token('--bg'),
+        card: token('--card'),
+        'card-2': token('--card-2'),
+        ink: { DEFAULT: token('--ink'), muted: token('--ink-muted'), faint: token('--ink-faint') },
+        line: { DEFAULT: token('--line'), strong: token('--line-strong') },
+        accent: { DEFAULT: token('--accent'), ink: token('--accent-ink'), soft: token('--accent-soft') },
+        ok: { DEFAULT: token('--ok'), soft: token('--ok-soft'), ink: token('--ok-ink') },
+        warn: { DEFAULT: token('--warn'), soft: token('--warn-soft'), ink: token('--warn-ink') },
+        bad: { DEFAULT: token('--bad'), soft: token('--bad-soft'), ink: token('--bad-ink') },
+        info: { DEFAULT: token('--info'), soft: token('--info-soft'), ink: token('--info-ink') },
       },
       fontFamily: {
-        sans: ['Fira Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['DM Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['Fira Code', 'ui-monospace', 'monospace'],
       },
       boxShadow: {
-        card: '0 1px 2px 0 rgb(15 23 42 / 0.06), 0 1px 3px 0 rgb(15 23 42 / 0.04)',
-        pop: '0 8px 24px -8px rgb(15 23 42 / 0.18)',
+        card: 'var(--shadow-card)',
+        pop: 'var(--shadow-pop)',
       },
-      borderRadius: { card: '10px' },
+      borderRadius: {
+        card: '18px',
+        tile: '22px',
+        pill: '999px',
+      },
+      transitionDuration: { 180: '180ms' },
     },
   },
   plugins: [],
