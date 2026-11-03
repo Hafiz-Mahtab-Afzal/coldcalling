@@ -3,9 +3,9 @@ import Tooltip from '@mui/material/Tooltip';
 import { OUTCOMES, isDead } from '../lib/outcomes';
 
 const boxSx = {
-  padding: '2px',
+  padding: '1px',
   color: 'rgb(var(--ink-faint))',
-  '& .MuiSvgIcon-root': { fontSize: 17 },
+  '& .MuiSvgIcon-root': { fontSize: 16 },
   '&.Mui-checked': { color: 'rgb(var(--accent))' },
   '&.Mui-disabled': { color: 'rgb(var(--line-strong))' },
   '&:hover': { backgroundColor: 'rgb(var(--accent) / 0.08)' },
