@@ -54,13 +54,14 @@ const FilterBar = ({ filters, countries, cities, categories, onChange, onReset }
   const desktop = useIsDesktop();
 
   const cityOptions = filters.country ? cities.filter((c) => c.country === filters.country) : cities;
+  const typeOptions = categories.filter((c) => c.sellable > 0);
 
   const selects = (
     <>
       <Select
         label="Country"
         value={filters.country}
-        onChange={(v) => onChange({ country: v, city: '' })}
+        onChange={(v) => onChange({ country: v, city: '', category: '' })}
         options={[{ value: '', label: 'All countries' }, ...countries.map((c) => ({ value: c, label: c }))]}
       />
       <Select
@@ -69,7 +70,7 @@ const FilterBar = ({ filters, countries, cities, categories, onChange, onReset }
         onChange={(v) => onChange({ city: v, day: '', category: '' })}
         options={[
           { value: '', label: `All cities (${cityOptions.length})` },
-          ...cityOptions.map((c) => ({ value: c.city, label: `${c.city} — ${c.total}` })),
+          ...cityOptions.map((c) => ({ value: c.city, label: `${c.city} · ${c.total}` })),
         ]}
       />
       <Select
@@ -77,8 +78,11 @@ const FilterBar = ({ filters, countries, cities, categories, onChange, onReset }
         value={filters.category}
         onChange={(v) => onChange({ category: v })}
         options={[
-          { value: '', label: 'All types' },
-          ...categories.map((c) => ({ value: c.category, label: `${c.category} — ${c.sellable}/${c.total}` })),
+          {
+            value: '',
+            label: typeOptions.length ? `All types (${typeOptions.length})` : 'No type left to call',
+          },
+          ...typeOptions.map((c) => ({ value: c.category, label: `${c.category} · ${c.sellable}/${c.total}` })),
         ]}
       />
       <Select
