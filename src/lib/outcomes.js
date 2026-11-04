@@ -31,6 +31,7 @@ export const OUTCOMES = [
   define('already_arranged', 'Already asked someone', 'Already asked', 'neutral'),
   define('has_website', 'Already has a website', 'Has website', 'neutral', true),
   define('reason_pakistan', 'Reason: from Pakistan', 'From Pakistan', 'neutral', true),
+  define('tried_myself', 'Tried by myself', 'Tried myself', 'neutral', true),
   define('not_interested', 'Not interested', 'Not interested', 'bad', true),
   define('agreed', 'Selling now, agreed', 'Selling now', 'ok', true),
   define('done', 'Sold', 'Sold', 'ok', true),
