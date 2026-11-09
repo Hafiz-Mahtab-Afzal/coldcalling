@@ -7,6 +7,7 @@ import { MdInbox, MdWarning } from 'react-icons/md';
 import http, { errorText } from './lib/http';
 import apis from './config/apis';
 import Header from './components/Header';
+import { zoneFor } from './lib/timezones';
 import StatTiles from './components/StatTiles';
 import PageHeading from './components/PageHeading';
 import FilterBar from './components/FilterBar';
@@ -324,6 +325,10 @@ const App = ({ mode, onToggleMode }) => {
     );
   }
 
+  // a city pins the clock on its own, otherwise the country does
+  const pickedCity = cities.find((c) => c.city === filters.city);
+  const clockCountry = filters.country || pickedCity?.country || '';
+
   return (
     <div className="min-h-screen bg-shell">
       <Header
@@ -333,6 +338,8 @@ const App = ({ mode, onToggleMode }) => {
         loading={loading}
         mode={mode}
         onToggleMode={onToggleMode}
+        place={filters.city || clockCountry}
+        zone={zoneFor(clockCountry, filters.city)}
       />
 
       <main className="mx-auto max-w-[1680px] space-y-3.5 px-3 pb-10 pt-1 sm:space-y-4 sm:px-5">
